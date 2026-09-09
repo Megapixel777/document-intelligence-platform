@@ -12,6 +12,11 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      POSTGRES_DB: document_intelligence
+      POSTGRES_USER: document_user
+      POSTGRES_PASSWORD: document_password
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -20,6 +25,11 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
+      - name: Install Tesseract
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tesseract-ocr tesseract-ocr-spa
 
       - name: Install dependencies
         run: |
