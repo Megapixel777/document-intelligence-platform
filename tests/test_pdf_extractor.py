@@ -1,17 +1,29 @@
-from pathlib import Path
+import pymupdf
 
 from app.processing.pdf_extractor import PDFTextExtractor
 
-PDF_PATH = Path(
-    "documents/f43de838-559a-4a9b-ba71-ea4649c56617.pdf"
-)
 
+def test_pdf_text_extraction(tmp_path):
+    pdf_path = tmp_path / "test_document.pdf"
 
-def test_pdf_text_extraction():
+    document = pymupdf.open()
+
+    try:
+        page = document.new_page()
+        page.insert_text(
+            (72, 72),
+            "Documento de prueba para PDF extraction",
+        )
+
+        document.save(pdf_path)
+
+    finally:
+        document.close()
+
     extractor = PDFTextExtractor()
 
-    result = extractor.extract(str(PDF_PATH))
+    result = extractor.extract(str(pdf_path))
 
-    assert result.page_count == 2
+    assert result.page_count == 1
     assert result.has_text is True
-    assert len(result.text) > 0
+    assert "Documento de prueba" in result.text
