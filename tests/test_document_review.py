@@ -40,7 +40,7 @@ def test_review_document_moves_needs_review_to_processed():
             "supplier": "Tecnologia Iberia S.L.",
             "supplier_tax_id": "B99286320",
             "customer": "Empresa Demo S.A.",
-            "customer_tax_id": "A87654321",
+            "customer_tax_id": "A87654323",
             "subtotal": 1050.0,
             "tax": 220.5,
             "total": 1270.5,
@@ -55,7 +55,7 @@ def test_review_document_moves_needs_review_to_processed():
     assert data["confidence_score"] == 1.0
     assert data["invoice_number"] == "FAC-2026-0042"
     assert data["supplier_tax_id"] == "B99286320"
-    assert data["customer_tax_id"] == "A87654321"
+    assert data["customer_tax_id"] == "A87654323"
 
 
 def test_review_document_rejects_invalid_amounts():

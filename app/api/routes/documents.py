@@ -57,6 +57,7 @@ def _document_to_response(document):
         "file_path": document.file_path,
         "document_type": document.document_type,
         "status": document.status,
+        "processing_method": document.processing_method,
         "confidence_score": document.confidence_score,
         "field_confidence": document.field_confidence,
         "invoice_number": document.invoice_number,

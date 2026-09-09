@@ -50,6 +50,11 @@ class Document(Base):
         default="uploaded",
     )
 
+    processing_method: Mapped[str | None] = mapped_column(
+        String(50),
+        nullable=True,
+    )
+
     confidence_score: Mapped[float | None] = mapped_column(
         Float,
         nullable=True,

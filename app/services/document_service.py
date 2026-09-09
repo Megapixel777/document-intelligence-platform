@@ -68,6 +68,10 @@ class DocumentService:
 
         document.extracted_text = processing_result.text
 
+        document.processing_method = (
+        processing_result.extraction_method
+        )
+
         classification = self.document_classifier.classify(
             processing_result.text,
         )

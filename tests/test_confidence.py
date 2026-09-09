@@ -19,6 +19,7 @@ def test_complete_invoice_has_full_field_confidence():
     validation = InvoiceValidationResult(
         is_valid=True,
         amount_check=True,
+        tax_id_check=True,
         errors=[],
     )
 
@@ -55,6 +56,7 @@ def test_missing_fields_reduce_confidence():
     validation = InvoiceValidationResult(
         is_valid=True,
         amount_check=True,
+        tax_id_check=True,
         errors=[],
     )
 
@@ -90,6 +92,7 @@ def test_invalid_amounts_do_not_reduce_extraction_confidence():
     validation = InvoiceValidationResult(
         is_valid=False,
         amount_check=False,
+        tax_id_check=True,
         errors=["Subtotal + tax does not match total."],
     )
 
@@ -103,6 +106,7 @@ def test_invalid_amounts_do_not_reduce_extraction_confidence():
     assert result.score == 1.0
     assert result.level == "high"
     assert result.needs_review is False
+
 
 def test_ocr_company_names_reduce_field_confidence():
     invoice = InvoiceExtractionResult(
@@ -120,6 +124,7 @@ def test_ocr_company_names_reduce_field_confidence():
     validation = InvoiceValidationResult(
         is_valid=True,
         amount_check=True,
+        tax_id_check=True,
         errors=[],
     )
 
