@@ -1,6 +1,5 @@
 from app.processing.ocr import OCRService
 
-
 ocr_service = OCRService()
 
 result = ocr_service.extract(

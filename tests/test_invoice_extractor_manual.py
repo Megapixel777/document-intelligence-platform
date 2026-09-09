@@ -1,53 +1,54 @@
-from app.processing.confidence import ConfidenceCalculator
 from app.processing.invoice_extractor import InvoiceExtractor
-from app.processing.invoice_validator import InvoiceValidator
-
 
 text = """
-FACTURA
+EAN
 
-Factura nº FAC-2026-0042
-Fecha: 08/09/2026
+a 7 Tecnologia Iberia S.L. FACTURA
 
-EMISOR
-Tecnología Iberia S.L.
-CIF: B12345678
+ES d Soluciones digitales para tu negocio
+E Calle Mayor, 25 N*: FAC-2026-0042
+oa 28013 Madrid, España
+Ne CIF: 812345678 Fecha: 08/09/2026
+‘ed Tel: +34 910 123 456 Referencia: PO-2026-0175
+y info@tecnologia-iberia.es
+Re www.tecnologia-iberia.es
 
-CLIENTE
-Empresa Demo S.A.
+be
+ta CLIENTE DATOS DE PAGO
+E Empresa Demo S.A. Transferencia bancaria
+E Avenida de la Innovación, 12 IBAN: ESOO 0000 0000 0000 0000 0000
+4 28050 Madrid, España BIC: BSCHESMMXXX
+by CIF: A87654321 Banco Santander
+a Plazo de pago: 30 dias
 
-Base imponible: 1050.00
-IVA (21%): 220.50
-TOTAL: 1270.50
+Descripción Cantidad Precio unitario Importe
+Servicio de consultoría de datos dl 800,00 € 800,00 €
+Procesamiento documental 1 250,00 € 250,00 €
+
+Base imponible 1.050,00 €
+IVA (21%) 220,50 €
+TOTAL 1.270,50 € 4
+
+Observaciones 4
 """
 
 
-extractor = InvoiceExtractor()
-validator = InvoiceValidator()
-confidence_calculator = ConfidenceCalculator()
+def main() -> None:
+    extractor = InvoiceExtractor()
 
-invoice = extractor.extract(text)
-validation = validator.validate(invoice)
-confidence = confidence_calculator.calculate(
-    invoice=invoice,
-    validation=validation,
-)
+    result = extractor.extract(text)
 
-print("=" * 80)
-print(f"Invoice number: {invoice.invoice_number}")
-print(f"Invoice date: {invoice.invoice_date}")
-print(f"Supplier: {invoice.supplier}")
-print(f"Supplier tax ID: {invoice.supplier_tax_id}")
-print(f"Customer: {invoice.customer}")
-print(f"Subtotal: {invoice.subtotal}")
-print(f"Tax: {invoice.tax}")
-print(f"Total: {invoice.total}")
-print("=" * 80)
-print(f"Valid: {validation.is_valid}")
-print(f"Amount check: {validation.amount_check}")
-print(f"Errors: {validation.errors}")
-print("=" * 80)
-print(f"Confidence score: {confidence.score}")
-print(f"Confidence level: {confidence.level}")
-print(f"Needs review: {confidence.needs_review}")
-print("=" * 80)
+    print("=" * 80)
+    print(f"Invoice number: {result.invoice_number}")
+    print(f"Invoice date: {result.invoice_date}")
+    print(f"Supplier: {result.supplier}")
+    print(f"Supplier tax ID: {result.supplier_tax_id}")
+    print(f"Customer: {result.customer}")
+    print(f"Subtotal: {result.subtotal}")
+    print(f"Tax: {result.tax}")
+    print(f"Total: {result.total}")
+    print("=" * 80)
+
+
+if __name__ == "__main__":
+    main()

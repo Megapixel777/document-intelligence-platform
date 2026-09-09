@@ -5,6 +5,8 @@ import pymupdf
 import pytesseract
 from PIL import Image
 
+from app.core.config import settings
+
 
 @dataclass
 class OCRResult:
@@ -13,6 +15,9 @@ class OCRResult:
 
 
 class OCRService:
+
+    def __init__(self):
+        pytesseract.pytesseract.tesseract_cmd = settings.tesseract_cmd
 
     def extract(self, file_path: str) -> OCRResult:
         document = pymupdf.open(file_path)

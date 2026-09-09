@@ -1,7 +1,7 @@
 import uuid
-from datetime import datetime
+from datetime import date, datetime
 
-from sqlalchemy import DateTime, Integer, String, Float
+from sqlalchemy import Date, DateTime, Float, Integer, String, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
@@ -51,6 +51,51 @@ class Document(Base):
     )
 
     confidence_score: Mapped[float | None] = mapped_column(
+        Float,
+        nullable=True,
+    )
+
+    extracted_text: Mapped[str | None] = mapped_column(
+        Text,
+        nullable=True,
+    )
+
+    invoice_number: Mapped[str | None] = mapped_column(
+        String(100),
+        nullable=True,
+    )
+
+    invoice_date: Mapped[date | None] = mapped_column(
+        Date,
+        nullable=True,
+    )
+
+    supplier: Mapped[str | None] = mapped_column(
+        String(255),
+        nullable=True,
+    )
+
+    supplier_tax_id: Mapped[str | None] = mapped_column(
+        String(20),
+        nullable=True,
+    )
+
+    customer: Mapped[str | None] = mapped_column(
+        String(255),
+        nullable=True,
+    )
+
+    subtotal: Mapped[float | None] = mapped_column(
+        Float,
+        nullable=True,
+    )
+
+    tax: Mapped[float | None] = mapped_column(
+        Float,
+        nullable=True,
+    )
+
+    total: Mapped[float | None] = mapped_column(
         Float,
         nullable=True,
     )

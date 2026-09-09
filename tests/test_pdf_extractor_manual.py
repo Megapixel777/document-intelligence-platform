@@ -1,6 +1,5 @@
 from app.processing.pdf_extractor import PDFTextExtractor
 
-
 extractor = PDFTextExtractor()
 
 result = extractor.extract(

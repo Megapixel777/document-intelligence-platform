@@ -40,10 +40,10 @@ class InvoiceExtractor:
 
     def _extract_invoice_number(self, text: str) -> str | None:
         patterns = [
-            r"Factura\s*n[º°]\s*:?\s*([A-Za-z0-9][A-Za-z0-9\-/]+)",
-            r"Factura\s*número\s*:?\s*([A-Za-z0-9][A-Za-z0-9\-/]+)",
-            r"Factura\s*No\.?\s*:?\s*([A-Za-z0-9][A-Za-z0-9\-/]+)",
-            r"Factura\s*:\s*([A-Za-z0-9][A-Za-z0-9\-/]+)",
+            r"\bN\*?\s*:\s*([A-Za-z0-9][A-Za-z0-9\-/]+)",
+            r"Factura\s+n[º°i]\s*:?\s*([A-Za-z0-9][A-Za-z0-9\-/]+)",
+            r"Factura\s+número\s*:?\s*([A-Za-z0-9][A-Za-z0-9\-/]+)",
+            r"Factura\s+No\.?\s*:?\s*([A-Za-z0-9][A-Za-z0-9\-/]+)",
         ]
 
         for pattern in patterns:
@@ -84,26 +84,44 @@ class InvoiceExtractor:
             return None
 
     def _extract_supplier(self, text: str) -> str | None:
-        pattern = r"EMISOR\s*\n\s*(.+)"
+        pattern = (
+            r"\b"
+            r"([A-ZÁÉÍÓÚÜÑ]"
+            r"[A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9 .,&'-]*?"
+            r"(?:S\.L\.|S\.A\.))"
+            r"\s+FACTURA\b"
+        )
 
         match = re.search(
             pattern,
             text,
-            flags=re.IGNORECASE,
+            flags=re.MULTILINE,
         )
 
         if not match:
             return None
 
-        return match.group(1).strip()
+        supplier = match.group(1).strip()
+
+        supplier = re.sub(
+            r"^[^A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+",
+            "",
+            supplier,
+        )
+
+        return supplier
 
     def _extract_supplier_tax_id(self, text: str) -> str | None:
-        pattern = r"(?:CIF|NIF|C\.I\.F\.|N\.I\.F\.)\s*:?\s*([A-Z]\d{8})"
+        pattern = (
+            r"CIF\s*:?\s*"
+            r"([A-Z]\d{8})"
+            r"(?=.*CLIENTE)"
+        )
 
         match = re.search(
             pattern,
             text,
-            flags=re.IGNORECASE,
+            flags=re.IGNORECASE | re.DOTALL,
         )
 
         if not match:
@@ -112,21 +130,39 @@ class InvoiceExtractor:
         return match.group(1).upper()
 
     def _extract_customer(self, text: str) -> str | None:
-        pattern = r"CLIENTE\s*\n\s*(.+)"
+        pattern = (
+            r"CLIENTE.*?"
+            r"([A-Za-zÁÉÍÓÚÜÑáéíóúüñ][^\n]*?"
+            r"S\.A\.)\s+Transferencia"
+        )
 
         match = re.search(
             pattern,
             text,
-            flags=re.IGNORECASE,
+            flags=re.IGNORECASE | re.DOTALL,
         )
 
         if not match:
             return None
 
-        return match.group(1).strip()
+        customer = match.group(1).strip()
+
+        customer = re.sub(
+            r"^[^A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+",
+            "",
+            customer,
+        )
+
+        customer = re.sub(
+            r"^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]\s+",
+            "",
+            customer,
+        )
+
+        return customer
 
     def _extract_subtotal(self, text: str) -> float | None:
-        pattern = r"Base\s+imponible\s*:\s*([\d.,]+)"
+        pattern = r"Base\s+imponible\s*:?\s*([\d.,]+)"
 
         match = re.search(
             pattern,
@@ -140,7 +176,7 @@ class InvoiceExtractor:
         return self._parse_amount(match.group(1))
 
     def _extract_tax(self, text: str) -> float | None:
-        pattern = r"IVA(?:\s*\([^)]*\))?\s*:\s*([\d.,]+)"
+        pattern = r"IVA(?:\s*\([^)]*\))?\s*:?\s*([\d.,]+)"
 
         match = re.search(
             pattern,
@@ -154,7 +190,7 @@ class InvoiceExtractor:
         return self._parse_amount(match.group(1))
 
     def _extract_total(self, text: str) -> float | None:
-        pattern = r"TOTAL\s*:\s*([\d.,]+)"
+        pattern = r"TOTAL\s*:?\s*([\d.,]+)"
 
         match = re.search(
             pattern,

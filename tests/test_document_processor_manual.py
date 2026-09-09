@@ -2,7 +2,6 @@ from app.processing.document_processor import DocumentProcessor
 from app.processing.ocr import OCRService
 from app.processing.pdf_extractor import PDFTextExtractor
 
-
 processor = DocumentProcessor(
     pdf_extractor=PDFTextExtractor(),
     ocr_service=OCRService(),

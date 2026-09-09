@@ -10,6 +10,11 @@ app = FastAPI(
     version="0.1.0",
 )
 
+@app.get("/")
+def root(): return { "application": "Document Intelligence Platform",
+                     "version": "0.1.0", "status": "running",
+                     "documentation": "/docs", }
+
 
 @app.get("/health")
 def health_check():

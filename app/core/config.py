@@ -13,6 +13,11 @@ class Settings(BaseSettings):
     postgres_host: str = "localhost"
     postgres_port: int = 5432
 
+    tesseract_cmd: str = (
+        r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+    )
+
+    
     @property
     def database_url(self) -> str:
         return (
