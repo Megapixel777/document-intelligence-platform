@@ -68,6 +68,7 @@ def _document_to_response(document):
         "supplier": document.supplier,
         "supplier_tax_id": document.supplier_tax_id,
         "customer": document.customer,
+        "customer_tax_id": document.customer_tax_id,
         "subtotal": document.subtotal,
         "tax": document.tax,
         "total": document.total,
@@ -177,6 +178,7 @@ def review_document(
             supplier=review.supplier,
             supplier_tax_id=review.supplier_tax_id,
             customer=review.customer,
+            customer_tax_id=review.customer_tax_id,
             subtotal=review.subtotal,
             tax=review.tax,
             total=review.total,
@@ -203,11 +205,12 @@ def review_document(
         document.supplier = review.supplier
         document.supplier_tax_id = review.supplier_tax_id
         document.customer = review.customer
+        document.customer_tax_id = review.customer_tax_id
         document.subtotal = review.subtotal
         document.tax = review.tax
         document.total = review.total
         document.confidence_score = confidence.score
-        document.status = "processed"
+        document.field_confidence = confidence.field_confidence
 
         document = document_repository.update(
             db=db,

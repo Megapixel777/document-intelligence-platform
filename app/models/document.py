@@ -90,6 +90,11 @@ class Document(Base):
         nullable=True,
     )
 
+    customer_tax_id: Mapped[str | None] = mapped_column(
+        String(20),
+        nullable=True,
+    )
+
     subtotal: Mapped[float | None] = mapped_column(
         Float,
         nullable=True,

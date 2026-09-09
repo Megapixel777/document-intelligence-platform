@@ -28,9 +28,6 @@ class ConfidenceCalculator:
 
         score = sum(field_confidence.values()) / len(field_confidence)
 
-        if not validation.amount_check:
-            score *= 0.5
-
         score = round(score, 2)
 
         if score >= 0.90:
@@ -64,19 +61,24 @@ class ConfidenceCalculator:
                 )
             ),
             "supplier": (
-                1.0
-                if invoice.supplier is not None
-                else 0.0
+                self.rules.company_name_confidence(
+                    invoice.supplier,
+                )
             ),
             "supplier_tax_id": (
-                self.rules.supplier_tax_id_confidence(
+                self.rules.tax_id_confidence(
                     invoice.supplier_tax_id,
                 )
             ),
             "customer": (
-                1.0
-                if invoice.customer is not None
-                else 0.0
+                self.rules.company_name_confidence(
+                    invoice.customer,
+                )
+            ),
+            "customer_tax_id": (
+                self.rules.tax_id_confidence(
+                    invoice.customer_tax_id,
+                )
             ),
             "subtotal": (
                 1.0

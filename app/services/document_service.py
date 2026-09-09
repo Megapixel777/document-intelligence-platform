@@ -106,6 +106,7 @@ class DocumentService:
         document.supplier = invoice.supplier
         document.supplier_tax_id = invoice.supplier_tax_id
         document.customer = invoice.customer
+        document.customer_tax_id = invoice.customer_tax_id
         document.subtotal = invoice.subtotal
         document.tax = invoice.tax
         document.total = invoice.total

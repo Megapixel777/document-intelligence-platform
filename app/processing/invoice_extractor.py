@@ -10,6 +10,7 @@ class InvoiceExtractionResult:
     supplier: str | None
     supplier_tax_id: str | None
     customer: str | None
+    customer_tax_id: str | None
     subtotal: float | None
     tax: float | None
     total: float | None
@@ -23,6 +24,7 @@ class InvoiceExtractor:
         supplier = self._extract_supplier(text)
         supplier_tax_id = self._extract_supplier_tax_id(text)
         customer = self._extract_customer(text)
+        customer_tax_id = self._extract_customer_tax_id(text)
         subtotal = self._extract_subtotal(text)
         tax = self._extract_tax(text)
         total = self._extract_total(text)
@@ -33,6 +35,7 @@ class InvoiceExtractor:
             supplier=supplier,
             supplier_tax_id=supplier_tax_id,
             customer=customer,
+            customer_tax_id=customer_tax_id,
             subtotal=subtotal,
             tax=tax,
             total=total,
@@ -112,16 +115,22 @@ class InvoiceExtractor:
         return supplier
 
     def _extract_supplier_tax_id(self, text: str) -> str | None:
+        supplier_section = re.split(
+            r"\bCLIENTE\b",
+            text,
+            maxsplit=1,
+            flags=re.IGNORECASE,
+        )[0]
+
         pattern = (
             r"CIF\s*:?\s*"
-            r"([A-Z]\d{8})"
-            r"(?=.*CLIENTE)"
+            r"([A-Z]\d{8}|[0-9]\d{8})"
         )
 
         match = re.search(
             pattern,
-            text,
-            flags=re.IGNORECASE | re.DOTALL,
+            supplier_section,
+            flags=re.IGNORECASE,
         )
 
         if not match:
@@ -152,6 +161,34 @@ class InvoiceExtractor:
             return None
 
         return match.group(1).strip()
+
+    def _extract_customer_tax_id(self, text: str) -> str | None:
+        section_match = re.search(
+            r"CLIENTE(.*?)(?:Base\s+imponible|IVA|TOTAL)",
+            text,
+            flags=re.IGNORECASE | re.DOTALL,
+        )
+
+        if not section_match:
+            return None
+
+        customer_section = section_match.group(1)
+
+        pattern = (
+            r"CIF\s*:?\s*"
+            r"([A-Z]\d{8}|[0-9]\d{8})"
+        )
+
+        match = re.search(
+            pattern,
+            customer_section,
+            flags=re.IGNORECASE,
+        )
+
+        if not match:
+            return None
+
+        return match.group(1).upper()
 
     def _extract_subtotal(self, text: str) -> float | None:
         pattern = r"Base\s+imponible\s*:?\s*([\d.,]+)"

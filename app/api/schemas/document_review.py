@@ -9,6 +9,7 @@ class DocumentReviewRequest(BaseModel):
     supplier: str | None = None
     supplier_tax_id: str | None = None
     customer: str | None = None
+    customer_tax_id: str | None = None
     subtotal: float | None = None
     tax: float | None = None
     total: float | None = None

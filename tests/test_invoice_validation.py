@@ -7,10 +7,12 @@ FACTURA
 Factura N*: FAC-2026-0042
 Fecha: 08/09/2026
 Tecnologia Iberia S.L. FACTURA
-CIF: B12345678
+CIF: B99286320
 
 CLIENTE
-Empresa Demo S.A. Transferencia bancaria
+Empresa Demo S.A.
+CIF: B99286320
+Transferencia bancaria
 
 Base imponible 1.050,00 €
 IVA (21%) 220,50 €
