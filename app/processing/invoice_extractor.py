@@ -130,36 +130,28 @@ class InvoiceExtractor:
         return match.group(1).upper()
 
     def _extract_customer(self, text: str) -> str | None:
-        pattern = (
-            r"CLIENTE.*?"
-            r"([A-Za-zÁÉÍÓÚÜÑáéíóúüñ][^\n]*?"
-            r"S\.A\.)\s+Transferencia"
-        )
-
-        match = re.search(
-            pattern,
+        section_match = re.search(
+            r"CLIENTE(.*?)(?:Base\s+imponible|IVA|TOTAL)",
             text,
             flags=re.IGNORECASE | re.DOTALL,
+        )
+
+        if not section_match:
+            return None
+
+        customer_section = section_match.group(1)
+
+        match = re.search(
+            r"\b([A-Za-zÁÉÍÓÚÜÑáéíóúüñ][^\n]*?"
+            r"(?:S\.A\.|S\.L\.))",
+            customer_section,
+            flags=re.IGNORECASE,
         )
 
         if not match:
             return None
 
-        customer = match.group(1).strip()
-
-        customer = re.sub(
-            r"^[^A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+",
-            "",
-            customer,
-        )
-
-        customer = re.sub(
-            r"^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]\s+",
-            "",
-            customer,
-        )
-
-        return customer
+        return match.group(1).strip()
 
     def _extract_subtotal(self, text: str) -> float | None:
         pattern = r"Base\s+imponible\s*:?\s*([\d.,]+)"

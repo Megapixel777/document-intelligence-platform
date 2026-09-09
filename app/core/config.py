@@ -1,7 +1,12 @@
+from pydantic import ConfigDict
 from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
+    model_config = ConfigDict(
+        env_file=".env",
+    )
+
     app_name: str = "Document Intelligence Platform"
     app_version: str = "0.1.0"
 
@@ -17,7 +22,6 @@ class Settings(BaseSettings):
         r"C:\Program Files\Tesseract-OCR\tesseract.exe"
     )
 
-    
     @property
     def database_url(self) -> str:
         return (
@@ -26,9 +30,6 @@ class Settings(BaseSettings):
             f"@{self.postgres_host}:{self.postgres_port}"
             f"/{self.postgres_db}"
         )
-
-    class Config:
-        env_file = ".env"
 
 
 settings = Settings()
