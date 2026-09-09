@@ -1,4 +1,3 @@
-from datetime import date
 from unittest.mock import Mock
 
 from fastapi.testclient import TestClient
@@ -8,7 +7,6 @@ from app.api.routes.documents import (
 )
 from app.main import app
 from app.models.document import Document
-
 
 client = TestClient(app)
 
@@ -53,7 +51,7 @@ def test_review_document_moves_needs_review_to_processed():
 
     data = response.json()
 
-    assert data["status"] == "needs_review"
+    assert data["status"] == "processed"
     assert data["confidence_score"] == 1.0
     assert data["invoice_number"] == "FAC-2026-0042"
     assert data["supplier_tax_id"] == "B99286320"

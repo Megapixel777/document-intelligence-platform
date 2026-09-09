@@ -211,6 +211,7 @@ def review_document(
         document.total = review.total
         document.confidence_score = confidence.score
         document.field_confidence = confidence.field_confidence
+        document.status = "processed"
 
         document = document_repository.update(
             db=db,
