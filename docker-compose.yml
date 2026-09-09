@@ -11,6 +11,34 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U document_user -d document_intelligence"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: document-intelligence-api
+    restart: unless-stopped
+    environment:
+      DOCUMENTS_PATH: /app/documents
+      POSTGRES_DB: document_intelligence
+      POSTGRES_USER: document_user
+      POSTGRES_PASSWORD: document_password
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      TESSERACT_CMD: tesseract
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./documents:/app/documents
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 volumes:
   postgres_data:
