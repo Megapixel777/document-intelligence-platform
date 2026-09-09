@@ -118,8 +118,9 @@ The invoice pipeline extracts:
 
 Invoice totals are validated using:
 
+```
 subtotal + tax = total
-
+```
 
 Validation failures are detected before a document is marked as successfully processed.
 
@@ -131,30 +132,32 @@ Documents with low confidence are automatically sent to human review.
 
 Current document states:
 
+```
 uploaded
-↓
+    ↓
 processing
-↓
+    ↓
 classified
-
+```
 
 For invoices:
 
+```
 uploaded
-↓
+    ↓
 processing
-↓
+    ↓
 invoice
-↓
+    ↓
 extraction
-↓
+    ↓
 validation
-↓
+    ↓
 confidence
-├── processed
-├── needs_review
-└── validation_failed
-
+    ├── processed
+    ├── needs_review
+    └── validation_failed
+```
 
 ### Human-in-the-loop
 
@@ -188,40 +191,41 @@ This provides a simple human-in-the-loop workflow for automated document process
 
 ## Project Structure
 
+```
 document-intelligence-platform/
 │
 ├── app/
-│ ├── api/
-│ │ ├── routes/
-│ │ │ └── documents.py
-│ │ └── schemas/
-│ │ └── document_review.py
-│ │
-│ ├── core/
-│ │ ├── config.py
-│ │ ├── database.py
-│ │ └── init_db.py
-│ │
-│ ├── models/
-│ │ └── document.py
-│ │
-│ ├── processing/
-│ │ ├── confidence.py
-│ │ ├── document_classifier.py
-│ │ ├── document_processor.py
-│ │ ├── invoice_extractor.py
-│ │ ├── invoice_validator.py
-│ │ ├── ocr.py
-│ │ └── pdf_extractor.py
-│ │
-│ ├── repositories/
-│ │ └── document_repository.py
-│ │
-│ ├── services/
-│ │ ├── document_service.py
-│ │ └── storage_service.py
-│ │
-│ └── main.py
+│   ├── api/
+│   │   ├── routes/
+│   │   │   └── documents.py
+│   │   └── schemas/
+│   │       └── document_review.py
+│   │
+│   ├── core/
+│   │   ├── config.py
+│   │   ├── database.py
+│   │   └── init_db.py
+│   │
+│   ├── models/
+│   │   └── document.py
+│   │
+│   ├── processing/
+│   │   ├── confidence.py
+│   │   ├── document_classifier.py
+│   │   ├── document_processor.py
+│   │   ├── invoice_extractor.py
+│   │   ├── invoice_validator.py
+│   │   ├── ocr.py
+│   │   └── pdf_extractor.py
+│   │
+│   ├── repositories/
+│   │   └── document_repository.py
+│   │
+│   ├── services/
+│   │   ├── document_service.py
+│   │   └── storage_service.py
+│   │
+│   └── main.py
 │
 ├── documents/
 ├── tests/
@@ -231,7 +235,7 @@ document-intelligence-platform/
 ├── .env.example
 ├── .gitignore
 └── README.md
-
+```
 
 ## Requirements
 
@@ -270,6 +274,7 @@ Update `.env` with the local PostgreSQL and Tesseract configuration.
 
 Example:
 
+```
 DOCUMENTS_PATH=documents
 
 POSTGRES_DB=document_intelligence
@@ -279,7 +284,7 @@ POSTGRES_HOST=localhost
 POSTGRES_PORT=5432
 
 TESSERACT_CMD=C:\Program Files\Tesseract-OCR\tesseract.exe
-
+```
 
 ### Database initialization
 
@@ -299,13 +304,15 @@ uvicorn app.main:app --reload
 
 The API will be available at:
 
+```
 http://127.0.0.1:8000
-
+```
 
 Interactive Swagger documentation:
 
+```
 http://127.0.0.1:8000/docs
-
+```
 
 ### Health checks
 
