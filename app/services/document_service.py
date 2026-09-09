@@ -111,6 +111,7 @@ class DocumentService:
         document.total = invoice.total
 
         document.confidence_score = confidence.score
+        document.field_confidence = confidence.field_confidence
 
         if confidence.needs_review:
             document.status = "needs_review"

@@ -58,6 +58,7 @@ def _document_to_response(document):
         "document_type": document.document_type,
         "status": document.status,
         "confidence_score": document.confidence_score,
+        "field_confidence": document.field_confidence,
         "invoice_number": document.invoice_number,
         "invoice_date": (
             document.invoice_date.isoformat()

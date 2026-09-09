@@ -1,7 +1,7 @@
 import uuid
 from datetime import date, datetime
 
-from sqlalchemy import Date, DateTime, Float, Integer, String, Text
+from sqlalchemy import JSON, Date, DateTime, Float, Integer, String, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
@@ -52,6 +52,11 @@ class Document(Base):
 
     confidence_score: Mapped[float | None] = mapped_column(
         Float,
+        nullable=True,
+    )
+
+    field_confidence: Mapped[dict[str, float] | None] = mapped_column(
+        JSON,
         nullable=True,
     )
 
