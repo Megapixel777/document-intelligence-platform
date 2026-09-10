@@ -38,6 +38,10 @@ def create_service(
         side_effect=lambda db, document: document
     )
 
+    document_repository.update = Mock(
+    side_effect=lambda db, document: document
+    )
+
     document_processor = Mock()
 
     document_processor.process.return_value = DocumentProcessingResult(
@@ -119,3 +123,29 @@ async def test_low_confidence_invoice_gets_needs_review_status(
     assert document.document_type == "invoice"
     assert document.confidence_score == 0.0
     assert document.status == "needs_review"
+
+@pytest.mark.anyio
+async def test_processing_error_gets_processing_failed_status(
+    tmp_path: Path,
+):
+    service = create_service(
+        tmp_path=tmp_path,
+        processing_text="",
+    )
+
+    service.document_processor.process.side_effect = RuntimeError(
+        "OCR processing failed."
+    )
+
+    file = UploadFile(
+        filename="broken.pdf",
+        file=BytesIO(b"fake pdf content"),
+    )
+
+    document = await service.upload_document(
+        db=None,
+        file=file,
+    )
+
+    assert document.status == "processing_failed"
+    assert document.processing_error == "OCR processing failed."

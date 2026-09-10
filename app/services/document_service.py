@@ -62,15 +62,29 @@ class DocumentService:
         with open(file_path, "rb") as stored_file:
             document.file_size = len(stored_file.read())
 
-        processing_result = self.document_processor.process(
-            file_path=file_path,
+        document = self.document_repository.create(
+            db=db,
+            document=document,
         )
 
-        document.extracted_text = processing_result.text
+        try:
+            processing_result = self.document_processor.process(
+                file_path=file_path,
+            )
 
-        document.processing_method = (
-        processing_result.extraction_method
-        )
+            document.extracted_text = processing_result.text
+            document.processing_method = (
+                processing_result.extraction_method
+            )
+
+        except Exception as exc:
+            document.status = "processing_failed"
+            document.processing_error = str(exc)
+
+            return self.document_repository.update(
+                db=db,
+                document=document,
+            )
 
         classification = self.document_classifier.classify(
             processing_result.text,
