@@ -65,6 +65,11 @@ class Document(Base):
         nullable=True,
     )
 
+    validation_errors: Mapped[list[str] | None] = mapped_column(
+        JSON,
+        nullable=True,
+    )
+
     extracted_text: Mapped[str | None] = mapped_column(
         Text,
         nullable=True,

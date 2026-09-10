@@ -117,6 +117,7 @@ class DocumentService:
 
         document.confidence_score = confidence.score
         document.field_confidence = confidence.field_confidence
+        document.validation_errors = validation.errors
 
         if confidence.needs_review:
             document.status = "needs_review"

@@ -60,6 +60,7 @@ def _document_to_response(document):
         "processing_method": document.processing_method,
         "confidence_score": document.confidence_score,
         "field_confidence": document.field_confidence,
+        "validation_errors": document.validation_errors,
         "invoice_number": document.invoice_number,
         "invoice_date": (
             document.invoice_date.isoformat()
@@ -212,6 +213,7 @@ def review_document(
         document.total = review.total
         document.confidence_score = confidence.score
         document.field_confidence = confidence.field_confidence
+        document.validation_errors = validation.errors
         document.status = "processed"
 
         document = document_repository.update(

@@ -31,12 +31,12 @@ class InvoiceValidator:
                 "Subtotal + tax does not match total."
             )
 
-        tax_id_check = self._validate_tax_ids(invoice)
+        tax_id_errors = self._validate_tax_ids(invoice)
 
-        if not tax_id_check:
-            errors.append(
-                "One or more tax IDs are mathematically invalid."
-            )
+        if tax_id_errors:
+            errors.extend(tax_id_errors)
+
+        tax_id_check = not tax_id_errors
 
         return InvoiceValidationResult(
             is_valid=len(errors) == 0,
@@ -64,20 +64,32 @@ class InvoiceValidator:
     def _validate_tax_ids(
         self,
         invoice: InvoiceExtractionResult,
-    ) -> bool:
+    ) -> list[str]:
+
+        errors = []
 
         if invoice.supplier_tax_id is None:
-            return False
+            errors.append(
+                "Supplier tax ID is missing."
+            )
+        elif not self.tax_id_validator.is_valid_cif(
+            invoice.supplier_tax_id,
+        ):
+            errors.append(
+                f"Supplier tax ID '{invoice.supplier_tax_id}' "
+                "is mathematically invalid."
+            )
 
         if invoice.customer_tax_id is None:
-            return False
-
-        supplier_valid = self.tax_id_validator.is_valid_cif(
-            invoice.supplier_tax_id,
-        )
-
-        customer_valid = self.tax_id_validator.is_valid_cif(
+            errors.append(
+                "Customer tax ID is missing."
+            )
+        elif not self.tax_id_validator.is_valid_cif(
             invoice.customer_tax_id,
-        )
+        ):
+            errors.append(
+                f"Customer tax ID '{invoice.customer_tax_id}' "
+                "is mathematically invalid."
+            )
 
-        return supplier_valid and customer_valid
+        return errors
